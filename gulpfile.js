@@ -13,9 +13,13 @@ const uglify = require("gulp-uglify");
 const gulpif = require("gulp-if");
 const env = process.env.NODE_ENV;
 
+
 sass.compiler = require("node-sass");
 
-const libs = ["node_modules/jquery/dist/jquery.js", "src/scripts/*.js"];
+const libs = [
+"node_modules/jquery/dist/jquery.js", 
+"node_modules/jquery-touchswipe/jquery.touchSwipe.js",
+"src/scripts/*.js"];
 
 task("clean", () => {
   return src("dist/**/*", { read: false }).pipe(rm());
