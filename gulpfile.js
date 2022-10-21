@@ -13,13 +13,13 @@ const uglify = require("gulp-uglify");
 const gulpif = require("gulp-if");
 const env = process.env.NODE_ENV;
 
-
 sass.compiler = require("node-sass");
 
 const libs = [
-"node_modules/jquery/dist/jquery.js", 
-"node_modules/jquery-touchswipe/jquery.touchSwipe.js",
-"src/scripts/*.js"];
+  "node_modules/jquery/dist/jquery.js",
+  "node_modules/jquery-touchswipe/jquery.touchSwipe.js",
+  "src/scripts/*.js",
+];
 
 task("clean", () => {
   return src("dist/**/*", { read: false }).pipe(rm());
@@ -27,6 +27,12 @@ task("clean", () => {
 
 task("copy:html", () => {
   return src("src/*.html")
+    .pipe(dest("dist"))
+    .pipe(reload({ stream: true }));
+});
+
+task("copy:txt", () => {
+  return src("src/*.txt")
     .pipe(dest("dist"))
     .pipe(reload({ stream: true }));
 });
@@ -101,6 +107,7 @@ task("scripts", () => {
 task("watch", () => {
   watch("./src/styles/**/*.scss", series("styles"));
   watch("./src/*.html", series("copy:html"));
+  watch("./src/*.txt", series("copy:txt"));
   watch("./src/scripts/*.js", series("scripts"));
 });
 
@@ -108,12 +115,29 @@ task(
   "default",
   series(
     "clean",
-    parallel("copy:html", "copy:img", "copy:fonts", "styles", "scripts"),
+    parallel(
+      "copy:html",
+      "copy:txt",
+      "copy:img",
+      "copy:fonts",
+      "styles",
+      "scripts"
+    ),
     parallel("watch", "server")
   )
 );
 
 task(
   "build",
-  series("clean", parallel("copy:html", "copy:img", "copy:fonts", "styles", "scripts"))
+  series(
+    "clean",
+    parallel(
+      "copy:html",
+      "copy:txt",
+      "copy:img",
+      "copy:fonts",
+      "styles",
+      "scripts"
+    )
+  )
 );
